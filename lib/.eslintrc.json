@@ -1,0 +1,56 @@
+{
+  "root": true,
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "../tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/recommended",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "airbnb-typescript/base"
+      ],
+      "plugins": [
+        "eslint-plugin-unicorn",
+        "eslint-plugin-no-null",
+        "import"
+      ],
+      "rules": {
+        "@typescript-eslint/comma-dangle": [
+          "error",
+          "never"
+        ],
+        "@typescript-eslint/indent": [
+          "error",
+          4
+        ],
+        "@typescript-eslint/lines-between-class-members": [
+          "error",
+          {
+            "exceptAfterSingleLine": true
+          }
+        ],
+        "@typescript-eslint/unbound-method": "off",
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/test.ts", "**/*.spec.ts"]}]
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}
