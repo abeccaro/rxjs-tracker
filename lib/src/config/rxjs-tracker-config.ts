@@ -1,7 +1,3 @@
-export const rxjsTrackerConfig: RxjsTrackerConfig = {
-    enableTracking: true
-};
-
-export interface RxjsTrackerConfig {
-    enableTracking: boolean;
+export class RxjsTrackerConfig {
+    static enableTracking = true;
 }

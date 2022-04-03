@@ -1,7 +1,6 @@
 {
     "name": "rxjs-tracker",
     "version": "0.1.0-beta1",
-    "private": true,
     "scripts": {
         "lint": "ng lint --fix",
         "build": "ng build",
