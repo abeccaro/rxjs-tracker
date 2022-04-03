@@ -1,13 +1,13 @@
 {
     "name": "@abeccaro/rxjs-tracker",
-    "version": "0.1.0",
+    "version": "0.1.0-beta1",
     "peerDependencies": {
-        "@angular/platform-browser-dynamic": "^13.3.0",
-        "zone.js": "^0.11.5"
+        "@angular/platform-browser-dynamic": "^13.0.0",
+        "zone.js": "^0.11.0"
     },
     "dependencies": {
-        "@angular/core": "^13.3.0",
-        "rxjs": "^7.5.5"
+        "@angular/core": "^13.0.0",
+        "rxjs": "^7.0.0"
     },
     "repository": {
         "type": "git",

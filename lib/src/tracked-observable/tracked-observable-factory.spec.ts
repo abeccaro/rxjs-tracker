@@ -1,5 +1,7 @@
 import { map, shareReplay, Subject, take } from 'rxjs';
 import { track } from './tracked-observable-factory';
+import { rxjsTrackerConfig } from '../config/rxjs-tracker-config';
+import { TrackedObservable } from './tracked-observable';
 
 
 describe('tracked observable factory', () => {
@@ -64,6 +66,22 @@ describe('tracked observable factory', () => {
         subscription.unsubscribe();
 
         expect(console.log).toHaveBeenCalledTimes(39);
+    });
+
+    it('Disabling tracking should behave like normal rxjs with no logs', () => {
+        spyOn(console, 'log').and.callThrough();
+
+        rxjsTrackerConfig.enableTracking = false;
+
+        const subject = new Subject<string>();
+        const sub = track(subject.asObservable(), 'Subject');
+        sub.subscribe(val => console.debug(val));
+        subject.next('test');
+
+        rxjsTrackerConfig.enableTracking = true;
+
+        expect(console.log).not.toHaveBeenCalled();
+        expect(sub instanceof TrackedObservable).toBeFalse();
     });
 
 });

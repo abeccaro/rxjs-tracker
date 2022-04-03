@@ -108,7 +108,7 @@ export class TrackedObservable<T> extends Observable<T> {
         newOperators.push(logEnd(this));
 
         // @ts-ignore
-        const res = track(super.pipe.apply(this, newOperators), this.name);
+        const res = track(super.pipe.apply(this, newOperators), this.name) as TrackedObservable<T>;
         res.subscribers = this.subscribers;
         res.trackedSource = this;
 
@@ -143,6 +143,12 @@ export class TrackedObservable<T> extends Observable<T> {
     registerSubscription() {
         if (this.trackedSource && this.trackedSource.name === this.name)
             this.trackedSource.subscribers++;
+
+        // TODO: idea for tracking the code location of subscribers (Angular only)
+        // // @ts-ignore
+        // Error.stackTraceLimit = Infinity;
+        // const matches = new Error().stack.split('\n').filter(row => row.includes('ng://') || row.includes('main.js'));
+        // console.error(matches.length ? matches[0] : 'Unknown source');
 
         this.subscribers++;
         console.log(`${this.name} got a subscription: ${this.subscribers - 1} -> ${this.subscribers}`);
