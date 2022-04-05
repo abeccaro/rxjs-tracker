@@ -2,7 +2,6 @@
 import { Observable, Observer, OperatorFunction, Subscription } from 'rxjs';
 import { log } from '../operators/log';
 import { logEnd } from '../operators/log-end';
-import { track } from './tracked-observable-factory';
 import { logStart } from '../operators/log-start';
 
 
@@ -108,7 +107,11 @@ export class TrackedObservable<T> extends Observable<T> {
         newOperators.push(logEnd(this));
 
         // @ts-ignore
-        const res = track(super.pipe.apply(this, newOperators), this.name) as TrackedObservable<T>;
+        const piped = super.pipe.apply(this, newOperators);
+        const res = new TrackedObservable(piped, this.name);
+
+        if (piped instanceof TrackedObservable)
+            piped.registerSubscription();
         res.subscribers = this.subscribers;
         res.trackedSource = this;
 

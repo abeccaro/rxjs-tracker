@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { RxjsTrackerConfig } from '../config/rxjs-tracker-config';
 import { TrackedObservable } from './tracked-observable';
+import { RxjsTrackerConfig } from '../config/rxjs-tracker-config';
 
 
 export function track<T>(obs: Observable<T>, name?: string): Observable<T> {
