@@ -1,10 +1,10 @@
 {
     "name": "rxjs-tracker",
-    "version": "0.1.0-beta1",
+    "version": "0.1.0",
     "scripts": {
         "lint": "ng lint --fix",
         "build": "ng build",
-        "publish": "npm run build && cd dist && npm pack && npm publish abeccaro-rxjs-tracker-$npm_package_version.tgz"
+        "publish": "ng build && cd dist && npm pack && npm publish abeccaro-rxjs-tracker-$npm_package_version.tgz --access public"
     },
     "dependencies": {
         "@angular/core": "^13.0.0",
