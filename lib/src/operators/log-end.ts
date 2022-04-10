@@ -1,5 +1,6 @@
 import { tap } from 'rxjs';
 import { TrackedObservable } from '../tracked-observable/tracked-observable';
+import { SubscriptionTracker } from '../tracked-observable/subscription-tracker';
 
 
 export function logEnd<T>(obs: TrackedObservable<T>) {
@@ -9,7 +10,7 @@ export function logEnd<T>(obs: TrackedObservable<T>) {
         },
         error() {},
         complete() {
-            if (obs.subscribers === 1)
+            if (SubscriptionTracker.getCount(obs.name) === 1)
                 console.log(`%c[${obs.name}]: Complete`, 'background: #00BCD4; color: #fff; padding: 3px; font-size: 9px;');
         }
     });

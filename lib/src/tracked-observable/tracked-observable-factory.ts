@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { TrackedObservable } from './tracked-observable';
 import { RxjsTrackerConfig } from '../config/rxjs-tracker-config';
+import { SubscriptionTracker } from './subscription-tracker';
 
 
 export function track<T>(obs: Observable<T>, name?: string): Observable<T> {
@@ -11,7 +12,8 @@ export function track<T>(obs: Observable<T>, name?: string): Observable<T> {
 
     if (obs instanceof TrackedObservable) {
         res.name = name || obs.name || res.name;
-        obs.registerSubscription();
+        if (obs.name !== res.name)
+            SubscriptionTracker.registerSubscription(obs.name);
     }
 
     return res;

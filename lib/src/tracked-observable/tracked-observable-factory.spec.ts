@@ -2,11 +2,13 @@ import { map, shareReplay, Subject, take } from 'rxjs';
 import { track } from './tracked-observable-factory';
 import { TrackedObservable } from './tracked-observable';
 import { RxjsTrackerConfig } from '../config/rxjs-tracker-config';
+import { SubscriptionTracker } from './subscription-tracker';
 
 
 describe('tracked observable factory', () => {
 
     it('Observers on separate observables from same subject', () => {
+        SubscriptionTracker.reset();
         spyOn(console, 'log').and.callThrough();
 
         const subject = new Subject<number[]>();
@@ -25,6 +27,8 @@ describe('tracked observable factory', () => {
             map(x => x)
         );
 
+        observable2.pipe(take(1)).subscribe(val => console.debug(val));
+        observable2.pipe(take(2)).subscribe(val => console.debug(val));
         const subscription = observable2.subscribe(val => console.debug(val));
 
         subject.next([5, 10, 15]);
@@ -34,10 +38,11 @@ describe('tracked observable factory', () => {
 
         subscription.unsubscribe();
 
-        expect(console.log).toHaveBeenCalledTimes(41);
+        expect(console.log).toHaveBeenCalledTimes(60);
     });
 
     it('Observers on single chain', () => {
+        SubscriptionTracker.reset();
         spyOn(console, 'log').and.callThrough();
 
         const subject = new Subject<number[]>();

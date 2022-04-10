@@ -3,15 +3,12 @@ import { Observable, Observer, OperatorFunction, Subscription } from 'rxjs';
 import { log } from '../operators/log';
 import { logEnd } from '../operators/log-end';
 import { logStart } from '../operators/log-start';
+import { SubscriptionTracker } from './subscription-tracker';
 
 
 export class TrackedObservable<T> extends Observable<T> {
 
     name: string;
-
-    subscribers = 0;
-
-    trackedSource?: TrackedObservable<T>;
 
     constructor(obs: Observable<T>, name = 'Unknown') {
         // @ts-ignore
@@ -107,17 +104,8 @@ export class TrackedObservable<T> extends Observable<T> {
         newOperators.push(logEnd(this));
 
         // @ts-ignore
-        const piped = super.pipe.apply(this, newOperators);
-        const res = new TrackedObservable(piped, this.name);
-
-        if (piped instanceof TrackedObservable)
-            piped.registerSubscription();
-        res.subscribers = this.subscribers;
-        res.trackedSource = this;
-
-        this.subscribe = super.subscribe;
-
-        return res;
+        const pipeRes = super.pipe.apply(this, newOperators);
+        return new TrackedObservable(pipeRes, this.name);
     }
 
     // region Subscribe function declarations
@@ -134,34 +122,16 @@ export class TrackedObservable<T> extends Observable<T> {
         error?: ((error: unknown) => void) | null,
         complete?: (() => void) | null
     ): Subscription {
-        this.registerSubscription();
-
         // @ts-ignore
         const sub = super.subscribe(observerOrNext, error, complete);
-        sub.add(() => this.unregisterSubscription());
+
+        const isInternal = new Error().stack?.split('\n')[2].trim().startsWith('at http');
+        if (!isInternal) {
+            SubscriptionTracker.registerSubscription(this.name);
+            sub.add(() => SubscriptionTracker.unregisterSubscription(this.name));
+        }
 
         return sub;
-    }
-
-    registerSubscription() {
-        if (this.trackedSource && this.trackedSource.name === this.name)
-            this.trackedSource.subscribers++;
-
-        // TODO: idea for tracking the code location of subscribers (Angular only)
-        // // @ts-ignore
-        // Error.stackTraceLimit = Infinity;
-        // const matches = new Error().stack.split('\n').filter(row => row.includes('ng://') || row.includes('main.js'));
-        // console.error(matches.length ? matches[0] : 'Unknown source');
-
-        this.subscribers++;
-        console.log(`${this.name} got a subscription: ${this.subscribers - 1} -> ${this.subscribers}`);
-    }
-
-    unregisterSubscription() {
-        this.subscribers--;
-        if (this.trackedSource && this.trackedSource.name === this.name)
-            this.trackedSource.subscribers--;
-        console.log(`${this.name} lost a subscription: ${this.subscribers + 1} -> ${this.subscribers}`);
     }
 
 }
