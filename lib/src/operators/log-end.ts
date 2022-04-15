@@ -6,7 +6,7 @@ import { SubscriptionTracker } from '../tracked-observable/subscription-tracker'
 export function logEnd<T>(obs: TrackedObservable<T>) {
     return tap({
         next() {
-            console.groupEnd();
+            // Logger.closeGroup();
         },
         error() {},
         complete() {
